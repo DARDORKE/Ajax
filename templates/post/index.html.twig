@@ -1,37 +1,62 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <a href="/posts" class="btn btn-secondary js-posts">Afficher les titres</a>
-    <div class="posts"></div>
+    <h2>Mes publications</h2>
+    {% if app.user %}
+        <a href="/logout" class="btn btn-danger">Déconnexion</a>
+    {% else %}
+        <a href="/login" class="btn btn-success">Connexion</a>
+    {% endif %}
+
+    <div class="row">
+        {% for post in posts %}
+            <div class="col-3 mb-3 card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text">{{ post.content }}</p>
+                    {% if app.user %}
+                        <a href="{{ path('post_favorite', {'id': post.id}) }}" class="card-link js-fav">
+                            {% if post.isFavByUser(app.user) %}
+                                <i class="fas fa-heart"></i>
+                            {% else %}
+                                <i class="far fa-heart"></i>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        {% else %}
+            <b>Aucune publication</b>
+        {% endfor %}
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        window.addEventListener("load", event => {
-            document.querySelector("a.js-posts").addEventListener("click", getPosts);
+        window.addEventListener("load", function(event) {
+            document.querySelectorAll("a.js-fav").forEach(link => {
+                link.addEventListener("click", favorite)
+            });
         });
 
-        function getPosts (event) {
+        function favorite (event) {
             event.preventDefault();
-            axios.get(this.href).then(response => {
-                const posts = document.querySelector("div.posts");
-                if(this.classList.contains("btn-secondary")) {
-                    response.data.forEach(post => {
-                        const node = document.createElement("li");
-                        node.textContent = post.title;
-                        posts.appendChild(node);
-                    });
-                    this.classList.replace("btn-secondary", "btn-warning");
-                    this.textContent = "Masquer les titres";
+            const favIcon = this.querySelector("i.fa-heart");
+            axios.post(this.href).then(response => {
+                if(favIcon.classList.contains("fas")) {
+                    favIcon.classList.replace("fas", "far");
                 } else {
-                    posts.innerHTML = "";
-                    this.classList.replace("btn-warning", "btn-secondary");
-                    this.textContent = "Afficher les titres";
+                    favIcon.classList.replace("far", "fas");
                 }
             }).catch(error => {
-                console.error(error);
-                window.alert("Une erreur s'est produite.");
+                if(error.response.status === 403) {
+                    window.alert("Vous ne pouvez pas ajouter un article aux favoris sans être connecté.");
+                } else {
+                    window.alert("Une erreur s'est produite.");
+                }
             });
         }
     </script>
