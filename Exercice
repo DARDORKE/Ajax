@@ -1,5 +1,15 @@
-À l'aide de l'AJAX et d'Axios, mettez en place un bouton similaire à celui que nous avons découvert
-précédemment, mais permettant cette fois d'afficher ou de masquer les titres des articles enregistrés
-en base de données, de manière asynchrone.
+Créez une entité FavPost contenant deux propriétés $post et $user de type relation ManyToOne.
 
-Un article est caractérisé simplement par un titre et un contenu.
+Vous pouvez utiliser des fixtures pour générer des données fictives.
+
+Ajoutez une méthode isFavByUser() à la classe Post permettant de savoir si un article est ajouté ou
+non aux favoris par l'utilisateur.
+
+Ajoutez une méthode addToFavorites() à la classe PostController permettant l'ajout d'un article aux favoris et
+renvoyant une réponse au format JSON en fonction de l'ajout ou du retrait d'un article. Ce contrôleur est associé
+à la route /post/{id}/favorite, intitulée post_favorite.
+
+Mettez en place ou reprenez un template Twig pour afficher un bouton permettant l'ajout d'un article aux favoris
+et traitant la requête de manière asynchrone sur chacun des articles.
+
+Vous pouvez utiliser une icône Font Awesome de cœur ou d'étoile pour déclencher l'ajout d'un article en favoris.
