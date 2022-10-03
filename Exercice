@@ -1,0 +1,5 @@
+À l'aide de l'AJAX et d'Axios, mettez en place un bouton similaire à celui que nous avons découvert
+précédemment, mais permettant cette fois d'afficher ou de masquer les titres des articles enregistrés
+en base de données, de manière asynchrone.
+
+Un article est caractérisé simplement par un titre et un contenu.
