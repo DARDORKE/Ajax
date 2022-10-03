@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a href="/posts" class="btn btn-secondary js-posts">Afficher les titres</a>
+    <div class="posts"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        window.addEventListener("load", event => {
+            document.querySelector("a.js-posts").addEventListener("click", getPosts);
+        });
+
+        function getPosts (event) {
+            event.preventDefault();
+            axios.get(this.href).then(response => {
+                const posts = document.querySelector("div.posts");
+                if(this.classList.contains("btn-secondary")) {
+                    response.data.forEach(post => {
+                        const node = document.createElement("li");
+                        node.textContent = post.title;
+                        posts.appendChild(node);
+                    });
+                    this.classList.replace("btn-secondary", "btn-warning");
+                    this.textContent = "Masquer les titres";
+                } else {
+                    posts.innerHTML = "";
+                    this.classList.replace("btn-warning", "btn-secondary");
+                    this.textContent = "Afficher les titres";
+                }
+            }).catch(error => {
+                console.error(error);
+                window.alert("Une erreur s'est produite.");
+            });
+        }
+    </script>
+{% endblock %}
